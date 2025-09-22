@@ -1,49 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Day 1: WebSocket Echo</title>
+    <title>Shared editor</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #282c34; color: #abb2bf; margin: 0; padding: 20px; }
+        h1 { color: #61afef; }
+        #editor {
+            width: 100%;
+            height: 80vh;
+            box-sizing: border-box;
+            background-color: #21252b;
+            color: #abb2bf;
+            border: 1px solid #3b4048;
+            border-radius: 5px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 16px;
+            padding: 15px;
+        }
+    </style>
 </head>
 <body>
-    <h1>WebSocket Echo Test</h1>
-    <input type="text" id="messageInput" placeholder="Type a message..." autofocus />
-    <button id="sendButton">Send</button>
-    <h3>Log:</h3>
-    <div id="messages"></div>
+    <h1>Live CodePad</h1>
+    <textarea id="editor" placeholder="Start typing here..."></textarea>
 
     <script>
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const messagesDiv = document.getElementById('messages');
+        const editor = document.getElementById('editor');
+        const socket = new WebSocket('ws://localhost:8080');
 
         // 1. Establish WebSocket connection with the server
         // Note: 'ws://' is for unencrypted connections.
-        const socket = new WebSocket('ws://localhost:8080');
+        
 
         // 2. Handle the 'open' event: fires when the connection is ready
         socket.onopen = () => {
-            console.log('WebSocket connection opened!');
-            messagesDiv.innerHTML += '<p><em>Connection to server established!</em></p>';
+            console.log('Connected to the server.');
+            editor.placceholder = 'Connection sucessful. Start collaborating!';
         };
 
         // 3. Handle the 'message' event: fires when a message arrives from the server
         socket.onmessage = (event) => {
-            console.log(`Message from server: ${event.data}`);
-            messagesDiv.innerHTML += `<p><strong>Server:</strong> ${event.data}</p>`;
+            // This event is triggered when another user makes a change.
+            // We update our editor's content with the new data from the server.
+            const currentCursorPosition = editor.selectionStart;
+            editor.value = event.data;
+            // Restore the cursor position to prevent it from jumping to the end
+            editor.setSelectionRange(currentCursorPosition, currentCursorPosition);
         };
 
-        // 4. Handle the 'close' event: fires if the connection is lost
-        socket.onclose = () => {
-            console.log('WebSocket connection closed.');
-            messagesDiv.innerHTML += '<p><em>Connection to server lost!</em></p>';
-        };
-
-        // 5. Send a message when the button is clicked
-        sendButton.onclick = () => {
-            const message = messageInput.value;
-            socket.send(message);
-            messagesDiv.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
-            messageInput.value = '';
-        };
+        // Fired when a user types in the textarea
+        editor.addEventListener('input', () => {
+            const text = editor.value;
+            // Send the entire current content to the server
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(text);
+            }
+        });
+       
+        
     </script>
 </body>
 </html>
