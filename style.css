@@ -1,0 +1,37 @@
+body { font-family: sans-serif; background-color: #282c34; color: #abb2bf; }
+#editor-container {
+    position: relative; /* Crucial for positioning cursors inside it */
+    width: 90%;
+    margin: auto;
+}
+#editor {
+    width: 100%;
+    height: 80vh;
+    box-sizing: border-box;
+    /* other styles from day 2... */
+    position: relative; /* So z-index works */
+    z-index: 1;
+    background: transparent; /* See the cursors underneath */
+}
+.remote-cursor {
+    position: absolute; /* Positioned relative to editor-container */
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 1.5em; /* Match editor's line height */
+    background-color: red; /* Default, will be overridden by JS */
+    z-index: 0; /* Behind the textarea */
+    pointer-events: none; /* Make it unclickable */
+    transition: top 0.1s, left 0.1s; /* Smooth movement */
+}
+.remote-cursor::after {
+    content: attr(data-user); /* Display the user's ID */
+    position: absolute;
+    top: -1.4em;
+    left: -2px;
+    font-size: 12px;
+    padding: 2px 4px;
+    color: white;
+    border-radius: 3px;
+    white-space: nowrap;
+}

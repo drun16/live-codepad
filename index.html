@@ -1,62 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Shared editor</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #282c34; color: #abb2bf; margin: 0; padding: 20px; }
-        h1 { color: #61afef; }
-        #editor {
-            width: 100%;
-            height: 80vh;
-            box-sizing: border-box;
-            background-color: #21252b;
-            color: #abb2bf;
-            border: 1px solid #3b4048;
-            border-radius: 5px;
-            font-family: 'Fira Code', 'Courier New', monospace;
-            font-size: 16px;
-            padding: 15px;
-        }
-    </style>
+    <meta charset="utf-8">
+    <title>User Cursors</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Live CodePad</h1>
-    <textarea id="editor" placeholder="Start typing here..."></textarea>
-
-    <script>
-        const editor = document.getElementById('editor');
-        const socket = new WebSocket('ws://localhost:8080');
-
-        // 1. Establish WebSocket connection with the server
-        // Note: 'ws://' is for unencrypted connections.
-        
-
-        // 2. Handle the 'open' event: fires when the connection is ready
-        socket.onopen = () => {
-            console.log('Connected to the server.');
-            editor.placceholder = 'Connection sucessful. Start collaborating!';
-        };
-
-        // 3. Handle the 'message' event: fires when a message arrives from the server
-        socket.onmessage = (event) => {
-            // This event is triggered when another user makes a change.
-            // We update our editor's content with the new data from the server.
-            const currentCursorPosition = editor.selectionStart;
-            editor.value = event.data;
-            // Restore the cursor position to prevent it from jumping to the end
-            editor.setSelectionRange(currentCursorPosition, currentCursorPosition);
-        };
-
-        // Fired when a user types in the textarea
-        editor.addEventListener('input', () => {
-            const text = editor.value;
-            // Send the entire current content to the server
-            if (socket.readyState === WebSocket.OPEN) {
-                socket.send(text);
-            }
-        });
-       
-        
-    </script>
+    <h1>Live CodePad - Cursors</h1>
+    <div id="editor-container">
+        <textarea id="editor" placeholder="Start typing here..."></textarea>
+    </div>
+    <script src="app.js"> </script>
 </body>
 </html>
