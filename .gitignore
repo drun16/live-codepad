@@ -1,4 +1,24 @@
 # Dependencies
 /node_modules
-.hintrc
+.hintric
+# Logs
+logs
+*.log
+npm-debug.log*
 
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Environment variables
+.env
+.env.local
+
+# Compiled files
+/dist
+/build
+
+# System files
+.DS_Store
+Thumbs.db

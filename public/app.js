@@ -1,10 +1,13 @@
 const editor = document.getElementById('editor');
 const editorContainer = document.getElementById('editor-container');
 // Get the room ID from the browser's URL path
+
 const roomId = window.location.pathname;
-const socket = new WebSocket(`ws://localhost:8080${roomId}`);
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const socketUrl = `${protocol}//${window.location.host}${roomId}`;
+const socket = new WebSocket(socketUrl);
 
-
+console.log(`Connecting to WebSocket at: ${socketUrl}`);
 const remoteCursors = {}; // Store other users' cursors { userId: element }
 
 

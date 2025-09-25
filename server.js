@@ -98,11 +98,11 @@ wss.on('connection', (ws, roomId) => {
 
 
 // // Serve the static frontend files
-// app.use(express.static('.'));
-// // A catch-all route to serve index.html for any room URL
-// app.get('/*', (req, res) => {
-//   res.sendFile(__dirname + '/public/index.html');
-// });
+app.use(express.static('public'));
+// A catch-all route to serve index.html for any room URL
+app.get('my',(req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
 
 // Start the HTTP server
 const PORT = 8080;
