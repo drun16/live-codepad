@@ -1,8 +1,12 @@
 const editor = document.getElementById('editor');
 const editorContainer = document.getElementById('editor-container');
-const socket = new WebSocket('ws://localhost:8080');
+// Get the room ID from the browser's URL path
+const roomId = window.location.pathname;
+const socket = new WebSocket(`ws://localhost:8080${roomId}`);
+
 
 const remoteCursors = {}; // Store other users' cursors { userId: element }
+
 
 // A helper function to calculate text dimensions (this is an approximation)
 function getCursorPositionPx(text, index) {
@@ -31,10 +35,17 @@ function getCursorPositionPx(text, index) {
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
+    // let currentCursorPosition;
 
     switch (data.type) {
+        case 'initialContent': // New message type from server
         case 'contentChange':
-            editor.value = data.content;
+            // currentCursorPosition = getCaretCharacterOffsetWithin(editor);
+            editor.textContent = data.content;
+            // Highlight the entire block of code
+            hljs.highlightElement(editor);
+            // Restore cursor position
+            // setCaretPosition(editor, currentCursorPosition);
             break;
 
         case 'cursorChange':
@@ -64,7 +75,7 @@ function handleCursorChange(data) {
     }
 
     // Calculate the pixel position and move the cursor element
-    const pos = getCursorPositionPx(editor.value, data.position);
+    const pos = getCursorPositionPx(editor.textContent, data.position);
     cursorEl.style.top = `${pos.top}px`;
     cursorEl.style.left = `${pos.left}px`;
 }
@@ -75,7 +86,7 @@ function handleCursorChange(data) {
 editor.addEventListener('input', () => {
     socket.send(JSON.stringify({
         type: 'contentChange',
-        content: editor.value
+        content: editor.textContent //use textContent for pre/code
     }));
 });
 
@@ -83,8 +94,22 @@ editor.addEventListener('input', () => {
 function sendCursorPosition() {
     socket.send(JSON.stringify({
         type: 'cursorChange',
-        position: editor.selectionStart
+        position: position
     }));
 }
+
+// --- Caret position helpers for contenteditable elements ---
+// (These are more complex than for a textarea)
+// function getCaretCharacterOffsetWithin(element) {
+//     // ... complex DOM logic to get cursor position ...
+//     // For simplicity, we'll keep our previous approximation for now.
+//     // A full implementation is beyond this tutorial's scope.
+//     return 0; // Placeholder
+// }
+
+// function setCaretPosition(element, offset) {
+//     // ... complex DOM logic to set cursor position ...
+// }
+
 editor.addEventListener('keyup', sendCursorPosition);
 editor.addEventListener('click', sendCursorPosition);
