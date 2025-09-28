@@ -1,3 +1,21 @@
+# REAL-TIME COLLABORATION TOOL
+
+*COMPANY* : CODTECH IT SOLUTIONS
+
+*NAME* : DHARUN PRASHOB M M
+
+*INTERN ID* : CT04DY2328
+
+*DOMAIN* : SOFTWARE DEVELOPMENT
+
+*DURATION* : 4 WEEEKS
+
+*MENTOR* : NEELA SANTOSH
+
+**OUTPUT** : 
+
+<img width="1918" height="917" alt="image" src="https://github.com/user-attachments/assets/2b6069ad-baec-41dd-a747-63f5d3c0b54b" />
+
 # 🚀 Live CodePad
 
 A real-time collaborative code editor built from scratch in 5 days using Node.js, Express, and WebSockets. This project demonstrates the core principles of real-time multi-user applications.
